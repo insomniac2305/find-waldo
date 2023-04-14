@@ -1,7 +1,6 @@
-import { database } from "../firebase";
 import { collection, getDocs } from "firebase/firestore";
-import { useState } from "react";
-import { useEffect } from "react";
+import { React, useState, useEffect } from "react";
+import database from "../firebase";
 
 function Photo() {
   const [charPositions, setCharPositions] = useState(null);
@@ -16,15 +15,9 @@ function Photo() {
     fetchCharPositions();
   }, []);
 
-  const positionList = charPositions?.map((data, index) => {
-    return <div key={index}>{JSON.stringify(data)}</div>;
-  });
+  const positionList = charPositions?.map((data) => <div key={data.id}>{JSON.stringify(data)}</div>);
 
-  return (
-    <>
-      <div>{positionList}</div>
-    </>
-  );
+  return <div>{positionList}</div>;
 }
 
 export default Photo;
