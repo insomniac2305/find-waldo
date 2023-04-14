@@ -12,4 +12,4 @@
  
  const app = initializeApp(firebaseConfig);
  
- export const database = getFirestore(app);
+ export default getFirestore(app);
