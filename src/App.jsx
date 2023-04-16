@@ -36,7 +36,7 @@ function App() {
 
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950 text-white">
-      <header className="sticky flex items-center justify-between bg-zinc-900 p-4 shadow-md">
+      <header className="sticky top-0 flex items-center justify-between bg-zinc-900 p-4 shadow-md">
         <div className="text-3xl font-bold tracking-tighter"><a href="/">Find the Character</a></div>
         {phase === PLAYING && (
           <span className="w-16 text-2xl font-semibold tracking-tighter">{formatMMSS(timeLapsed)}</span>
