@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-function SelectionPopup({ list, selectArea }) {
+function SelectionPopup({ list, selectArea, onSelect }) {
   const [position, setPosition] = useState([0, 0]);
   const [visible, setVisible] = useState(false);
   const popupRef = useRef(null);
@@ -39,8 +39,13 @@ function SelectionPopup({ list, selectArea }) {
 
   const selectList = list?.map((entry) => {
     return (
-      <li key={entry.id} className="rounded-md px-2 py-1 hover:cursor-pointer hover:bg-slate-700 hover:text-white">
-        {entry.title}
+      <li key={entry.id}>
+        <button
+          className="rounded-md px-2 py-1 hover:cursor-pointer hover:bg-slate-700 hover:text-white"
+          onClick={onSelect.bind(this, entry.id)}
+        >
+          {entry.title}
+        </button>
       </li>
     );
   });
