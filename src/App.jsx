@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Photo from "./components/Photo";
 import UserScoreForm from "./components/UserScoreForm";
 import formatMMSS from "./utilities/format";
+import ScoreBoard from "./components/ScoreBoard";
 
 const INIT = 1;
 const PLAYING = 2;
@@ -41,10 +42,14 @@ function App() {
       {phase === INIT && (
         <div>
           <button onClick={startGame}>Start</button>
+          <button onClick={() => setPhase(BOARD)}>Show Leaderboard</button>
         </div>
       )}
       {phase === FINISHED && (
         <UserScoreForm score={timeLapsed} onSubmit={() => setPhase(BOARD)} onCancel={() => setPhase(INIT)}/>
+      )}
+      {phase === BOARD && (
+        <ScoreBoard />
       )}
     </>
   );
