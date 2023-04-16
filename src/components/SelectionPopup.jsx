@@ -42,7 +42,7 @@ function SelectionPopup({ list, selectArea, onSelect }) {
     return (
       <li key={entry.id}>
         <button
-          className="rounded-md px-2 py-1 hover:cursor-pointer hover:bg-slate-700 hover:text-white"
+          className="rounded-md px-2 py-1 hover:bg-orange-400/20 w-full text-left font-semibold text-lg"
           onClick={onSelect.bind(this, entry.id)}
         >
           {entry.title}
@@ -55,13 +55,13 @@ function SelectionPopup({ list, selectArea, onSelect }) {
     <div
       data-popup
       ref={popupRef}
-      className={"absolute origin-top overflow-hidden rounded-md bg-slate-50 " + (visible ? "visible" : "invisible")}
+      className={"absolute rounded-md bg-zinc-800 p-2 " + (visible ? "visible" : "invisible")}
       style={{
         top: position[1] + "px",
         left: position[0] + "px",
       }}
     >
-      <ul>{selectList}</ul>
+      <ul className="">{selectList}</ul>
     </div>
   );
 }
