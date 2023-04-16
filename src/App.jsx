@@ -35,23 +35,34 @@ function App() {
   };
 
   return (
-    <>
-      <div className="text-3xl font-bold">Find Waldo</div>
-      {phase === PLAYING && <div>Time: {formatMMSS(timeLapsed)}</div>}
-      {phase === PLAYING && <Photo onCompletion={endGame} />}
-      {phase === INIT && (
-        <div>
-          <button onClick={startGame}>Start</button>
-          <button onClick={() => setPhase(BOARD)}>Show Leaderboard</button>
-        </div>
-      )}
-      {phase === FINISHED && (
-        <UserScoreForm score={timeLapsed} onSubmit={() => setPhase(BOARD)} onCancel={() => setPhase(INIT)}/>
-      )}
-      {phase === BOARD && (
-        <ScoreBoard />
-      )}
-    </>
+    <div className="flex min-h-screen flex-col bg-zinc-950 text-white">
+      <header className="sticky flex items-center justify-between bg-zinc-900 p-4 shadow-md">
+        <div className="text-3xl font-bold tracking-tighter"><a href="/">Find the Character</a></div>
+        {phase === PLAYING && (
+          <span className="w-16 text-2xl font-semibold tracking-tighter">{formatMMSS(timeLapsed)}</span>
+        )}
+      </header>
+      <main className="flex flex-1 items-center justify-center">
+        {phase === PLAYING && <Photo onCompletion={endGame} />}
+        {phase === INIT && (
+          <div className="flex flex-col gap-2">
+            <button className="rounded-lg bg-orange-800 hover:bg-orange-700 active:bg-orange-600 px-8 py-4 text-2xl font-semibold" onClick={startGame}>
+              Start
+            </button>
+            <button
+              className="rounded-lg bg-orange-400/10 hover:bg-orange-400/20 active:bg-orange-400/30 text-orange-400 px-8 py-4 text-2xl font-semibold"
+              onClick={() => setPhase(BOARD)}
+            >
+              Show Leaderboard
+            </button>
+          </div>
+        )}
+        {phase === FINISHED && (
+          <UserScoreForm score={timeLapsed} onSubmit={() => setPhase(BOARD)} onCancel={() => setPhase(INIT)} />
+        )}
+        {phase === BOARD && <ScoreBoard />}
+      </main>
+    </div>
   );
 }
 
