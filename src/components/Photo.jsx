@@ -8,47 +8,62 @@ import Image from "../assets/find-waldo-1.jpg";
 import SelectionPopup from "./SelectionPopup";
 
 function Photo() {
-  const [charPositions, setCharPositions] = useState(null);
+  const [charPositions, setCharPositions] = useState([]);
+  const [clickedPosition, setClickedPosition] = useState([]);
+
   const imgRef = useRef(null);
 
-  const fetchCharPositions = async () => {
-    const storedPositions = await getDocs(collection(database, "positions"));
-    const positionData = storedPositions.docs.map((doc) => ({ ...doc.data(), id: doc.id }));
-    setCharPositions(positionData);
-  };
-
   useEffect(() => {
+    const fetchCharPositions = async () => {
+      const storedPositions = await getDocs(collection(database, "positions"));
+      const positionData = storedPositions.docs.map((doc) => ({ ...doc.data(), id: doc.id, found: false }));
+      setCharPositions(positionData);
+    };
     fetchCharPositions();
   }, []);
 
-  const positionList = charPositions?.map((data) => ({ id: data.id, title: data.character }));
+  const positionList = charPositions.map((data) => ({ id: data.id, title: data.character }));
 
-  const getClickPosition = (e) => {
-    const bounds = e.target.getBoundingClientRect();
-    var left = bounds.left;
-    var top = bounds.top;
-    var x = e.pageX - left - window.scrollX;
-    var y = e.pageY - top - window.scrollY;
-    var cw = e.target.clientWidth;
-    var ch = e.target.clientHeight;
-    var iw = e.target.naturalWidth;
-    var ih = e.target.naturalHeight;
-    var px = Math.round((x / cw) * iw);
-    var py = Math.round((y / ch) * ih);
-    // console.log({
-    //   "at pixel": px + "," + py,
-    //   "mouse pos": x + "," + y,
-    //   "relative to boundingClientRect at": left + "," + top,
-    //   "client image size": cw + " x " + ch,
-    //   "natural image size": iw + " x " + ih,
-    // });
-    return [px, py];
+  const setRelativeClickPosition = (e) => {
+    const targetArea = e.target.getBoundingClientRect();
+    const clickedX = e.pageX - targetArea.left - window.scrollX;
+    const clickedY = e.pageY - targetArea.top - window.scrollY;
+    const renderedWidth = e.target.clientWidth;
+    const renderedHeight = e.target.clientHeight;
+    const normalWidth = e.target.naturalWidth;
+    const normalHeight = e.target.naturalHeight;
+    const pixelX = Math.round((clickedX / renderedWidth) * normalWidth);
+    const pixelY = Math.round((clickedY / renderedHeight) * normalHeight);
+
+    setClickedPosition([pixelX, pixelY]);
+  };
+
+  const validateSelection = (charId) => {
+    const characterPosition = charPositions.find((char) => char.id === charId);
+    if (!characterPosition) return;
+
+    const [charX, charY] = characterPosition.coordinates;
+    const [selectedX, selectedY] = clickedPosition;
+    const [toleranceX, toleranceY] = [imgRef.current.naturalWidth * 0.02, imgRef.current.naturalHeight * 0.04];
+
+    if (
+      selectedX < charX + toleranceX &&
+      selectedX > charX - toleranceX &&
+      selectedY < charY + toleranceY &&
+      selectedY > charY - toleranceY
+    ) {
+      const newCharPositions = [...charPositions];
+      const charFoundIndex = newCharPositions.findIndex((char) => char.id === charId);
+      newCharPositions[charFoundIndex].found = true;
+      
+      setCharPositions(newCharPositions);
+    }
   };
 
   return (
     <div>
-      <img ref={imgRef} className="w-full" onClick={getClickPosition} src={Image} alt="Find Waldo" />
-      <SelectionPopup list={positionList} selectArea={imgRef.current} />
+      <img ref={imgRef} className="w-full" onClick={setRelativeClickPosition} src={Image} alt="Find Waldo" />
+      <SelectionPopup list={positionList} selectArea={imgRef.current} onSelect={validateSelection} />
     </div>
   );
 }
