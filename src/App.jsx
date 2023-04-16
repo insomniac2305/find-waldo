@@ -44,7 +44,7 @@ function App() {
         </div>
       )}
       {phase === FINISHED && (
-        <UserScoreForm score={timeLapsed} onSubmit={() => setPhase(BOARD)} />
+        <UserScoreForm score={timeLapsed} onSubmit={() => setPhase(BOARD)} onCancel={() => setPhase(INIT)}/>
       )}
     </>
   );
