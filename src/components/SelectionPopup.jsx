@@ -7,6 +7,7 @@ function SelectionPopup({ list, selectArea, onSelect }) {
 
   useEffect(() => {
     const handleClick = (e) => {
+      if (!selectArea || !popupRef) return;
       const constraints = selectArea.getBoundingClientRect();
       const popupRect = popupRef.current.getBoundingClientRect();
 
@@ -35,7 +36,7 @@ function SelectionPopup({ list, selectArea, onSelect }) {
     return () => {
       window.removeEventListener("click", handleClick);
     };
-  });
+  }, [selectArea]);
 
   const selectList = list?.map((entry) => {
     return (
