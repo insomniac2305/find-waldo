@@ -1,39 +1,48 @@
 import React, { useEffect, useState } from "react";
 import Photo from "./components/Photo";
+import UserScoreForm from "./components/UserScoreForm";
+import formatMMSS from "./utilities/format";
 
 function App() {
-  const [startTime, setStartTime] = useState(Date.now());
+  const [started, setStarted] = useState(false);
+  const [startTime, setStartTime] = useState(null);
   const [timeLapsed, setTimeLapsed] = useState(0);
+  const [showBoard, setShowBoard] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTimeLapsed(Date.now() - startTime);
-    }, 1000);
+    let interval;
+    if (started) {
+      interval = setInterval(() => {
+        setTimeLapsed(Date.now() - startTime);
+      }, 1000);
+    }
 
     return () => clearInterval(interval);
-  }, [startTime]);
+  }, [started, startTime]);
 
-  const formatMMSS = (miliseconds) => {
-    const minutes = Math.floor(miliseconds / 60000);
-    const seconds = Math.floor(miliseconds / 1000) % 60;
-    const formattedTime = minutes.toString().padStart(2, "0") + ":" + seconds.toString().padStart(2, "0");
-    return formattedTime;
+  const startGame = () => {
+    setStartTime(Date.now());
+    setStarted(true);
+  };
+
+  const endGame = () => {
+    setStarted(false);
+    console.log("Finished in " + formatMMSS(timeLapsed));
   };
 
   return (
     <>
       <div className="text-3xl font-bold">Find Waldo</div>
-      <div>Time: {formatMMSS(timeLapsed)}</div>
-      <div>
-        <button
-          onClick={() => {
-            setStartTime(Date.now());
-          }}
-        >
-          Start
-        </button>
-      </div>
-      <Photo />
+      {started && <div>Time: {formatMMSS(timeLapsed)}</div>}
+      {started && <Photo onCompletion={endGame} />}
+      {!started && (
+        <div>
+          <button onClick={startGame}>Start</button>
+        </div>
+      )}
+      {!started && timeLapsed > 0 && !showBoard && (
+        <UserScoreForm score={timeLapsed} onSubmit={() => setShowBoard(true)} />
+      )}
     </>
   );
 }

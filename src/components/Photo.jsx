@@ -7,7 +7,7 @@ import database from "../firebase";
 import Image from "../assets/find-waldo-1.jpg";
 import SelectionPopup from "./SelectionPopup";
 
-function Photo() {
+function Photo({ onCompletion }) {
   const [charPositions, setCharPositions] = useState([]);
   const [clickedPosition, setClickedPosition] = useState([]);
 
@@ -21,6 +21,17 @@ function Photo() {
     };
     fetchCharPositions();
   }, []);
+
+  useEffect(() => {
+    if (charPositions.length === 0) return;
+
+    const foundCharacters = charPositions.filter((char) => char.found);
+
+    if (foundCharacters.length === charPositions.length) {
+      onCompletion();
+    }
+    
+  }, [charPositions]);
 
   const positionList = charPositions.map((data) => ({ id: data.id, title: data.character }));
 
@@ -55,7 +66,7 @@ function Photo() {
       const newCharPositions = [...charPositions];
       const charFoundIndex = newCharPositions.findIndex((char) => char.id === charId);
       newCharPositions[charFoundIndex].found = true;
-      
+
       setCharPositions(newCharPositions);
     }
   };
