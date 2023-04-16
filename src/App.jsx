@@ -3,45 +3,48 @@ import Photo from "./components/Photo";
 import UserScoreForm from "./components/UserScoreForm";
 import formatMMSS from "./utilities/format";
 
+const INIT = 1;
+const PLAYING = 2;
+const FINISHED = 3;
+const BOARD = 4;
+
 function App() {
-  const [started, setStarted] = useState(false);
+  const [phase, setPhase] = useState(INIT);
   const [startTime, setStartTime] = useState(null);
   const [timeLapsed, setTimeLapsed] = useState(0);
-  const [showBoard, setShowBoard] = useState(false);
 
   useEffect(() => {
     let interval;
-    if (started) {
+    if (phase === PLAYING) {
       interval = setInterval(() => {
         setTimeLapsed(Date.now() - startTime);
       }, 1000);
     }
 
     return () => clearInterval(interval);
-  }, [started, startTime]);
+  }, [phase, startTime]);
 
   const startGame = () => {
     setStartTime(Date.now());
-    setStarted(true);
+    setPhase(PLAYING);
   };
 
   const endGame = () => {
-    setStarted(false);
-    console.log("Finished in " + formatMMSS(timeLapsed));
+    setPhase(FINISHED);
   };
 
   return (
     <>
       <div className="text-3xl font-bold">Find Waldo</div>
-      {started && <div>Time: {formatMMSS(timeLapsed)}</div>}
-      {started && <Photo onCompletion={endGame} />}
-      {!started && (
+      {phase === PLAYING && <div>Time: {formatMMSS(timeLapsed)}</div>}
+      {phase === PLAYING && <Photo onCompletion={endGame} />}
+      {phase === INIT && (
         <div>
           <button onClick={startGame}>Start</button>
         </div>
       )}
-      {!started && timeLapsed > 0 && !showBoard && (
-        <UserScoreForm score={timeLapsed} onSubmit={() => setShowBoard(true)} />
+      {phase === FINISHED && (
+        <UserScoreForm score={timeLapsed} onSubmit={() => setPhase(BOARD)} />
       )}
     </>
   );
