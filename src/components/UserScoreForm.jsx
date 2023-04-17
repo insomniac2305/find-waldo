@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import formatMMSS from "../utilities/format";
 import { collection, addDoc } from "firebase/firestore";
 import database from "../firebase";
+import ProfanityFilter from "leo-profanity";
 
 function UserScoreForm({ score, onSubmit, onCancel }) {
   const [userName, setUserName] = useState("");
@@ -9,7 +10,7 @@ function UserScoreForm({ score, onSubmit, onCancel }) {
   const submitScore = (e) => {
     e.preventDefault();
     addDoc(collection(database, "userScores"), {
-      user: userName,
+      user: ProfanityFilter.clean(userName, "*", 1),
       score: score,
       timestamp: Date.now(),
     });
@@ -36,7 +37,7 @@ function UserScoreForm({ score, onSubmit, onCancel }) {
           required
           onChange={(e) => setUserName(e.target.value)}
         />
-        <div className="flex gap-2 justify-center mt-4">
+        <div className="mt-4 flex justify-center gap-2">
           <button
             className="w-32 rounded-lg bg-orange-800 py-2 text-lg font-semibold hover:bg-orange-700 active:bg-orange-600"
             type="submit"
@@ -54,5 +55,4 @@ function UserScoreForm({ score, onSubmit, onCancel }) {
     </div>
   );
 }
-
 export default UserScoreForm;
