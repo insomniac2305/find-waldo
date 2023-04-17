@@ -32,11 +32,23 @@ function Photo({ onCompletion }) {
     }
   }, [charPositions]);
 
-  const charsToSelect = charPositions.map((data) => ({ id: data.id, title: data.character }));
-  const charsToSelectList = charPositions.map((data) => {
-    if (!data.found) {
-      return <li key={data.id}>{data.character}</li>;
-    }
+  const wantedChars = charPositions.map((data) => ({ id: data.id, title: data.character }));
+  const wantedCharListItems = charPositions.map((data) => {
+    return (
+      <li className="flex flex-col items-center gap-2" key={data.id}>
+        <div className="relative">
+          <span className={"absolute flex h-28 w-28 items-center justify-center rounded-full bg-green-950/80 text-5xl text-green-400 " + (data.found ? "" : "invisible")}>
+            ✓
+          </span>
+          <img
+            className="h-28 w-28 rounded-full bg-zinc-700 object-cover object-top"
+            src={data.picture}
+            alt={data.character}
+          />
+        </div>
+        <span>{data.character}</span>
+      </li>
+    );
   });
 
   const setRelativeClickPosition = (e) => {
@@ -80,11 +92,11 @@ function Photo({ onCompletion }) {
       <div className="fixed top-24 flex w-full justify-center">
         <div className="flex flex-col items-center gap-4 rounded-lg bg-zinc-900 p-2">
           <h2 className="text-2xl font-bold tracking-tighter text-orange-400">Wanted</h2>
-          <ul className="flex gap-4 font-semibold">{charsToSelectList}</ul>
+          <ul className="flex gap-4 font-semibold">{wantedCharListItems}</ul>
         </div>
       </div>
       <img ref={imgRef} className="w-full" onClick={setRelativeClickPosition} src={Image} alt="Find Waldo" />
-      <SelectionPopup list={charsToSelect} selectArea={imgRef.current} onSelect={validateSelection} />
+      <SelectionPopup list={wantedChars} selectArea={imgRef.current} onSelect={validateSelection} />
     </div>
   );
 }
