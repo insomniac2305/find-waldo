@@ -37,7 +37,9 @@ function App() {
   return (
     <div className="flex min-h-screen flex-col bg-zinc-950 text-white">
       <header className="sticky top-0 flex items-center justify-between bg-zinc-900 p-4 shadow-md">
-        <div className="text-3xl font-bold tracking-tighter"><a href="/">Find the Character</a></div>
+        <div className="text-3xl font-bold tracking-tighter">
+          <a href="/">Find the Character</a>
+        </div>
         {phase === PLAYING && (
           <span className="w-16 text-2xl font-semibold tracking-tighter">{formatMMSS(timeLapsed)}</span>
         )}
@@ -45,16 +47,29 @@ function App() {
       <main className="flex flex-1 items-center justify-center">
         {phase === PLAYING && <Photo onCompletion={endGame} />}
         {phase === INIT && (
-          <div className="flex flex-col gap-2">
-            <button className="rounded-lg bg-orange-800 hover:bg-orange-700 active:bg-orange-600 px-8 py-4 text-2xl font-semibold" onClick={startGame}>
-              Start
-            </button>
-            <button
-              className="rounded-lg bg-orange-400/10 hover:bg-orange-400/20 active:bg-orange-400/30 text-orange-400 px-8 py-4 text-2xl font-semibold"
-              onClick={() => setPhase(BOARD)}
-            >
-              Show Leaderboard
-            </button>
+          <div className="relative flex max-w-3xl flex-col gap-2 text-center">
+            <h1 className="m-2 p-2 text-6xl tracking-tighter">
+              Find your favorite characters from different universes in this{" "}
+              <span className="font-bold text-orange-400">Where&apos;s Waldo</span> adaptation!
+            </h1>
+            <h3 className="m-2 p-2 text-2xl text-zinc-400">
+              Race against time to spot the heroes and claim your rank on the Leaderboard! Find them all to log your
+              highscore
+            </h3>
+            <div className="mt-16 flex justify-center gap-2">
+              <button
+                className="rounded-lg bg-orange-800 px-8 py-4 text-2xl font-semibold hover:bg-orange-700 active:bg-orange-600"
+                onClick={startGame}
+              >
+                Start
+              </button>
+              <button
+                className="rounded-lg bg-orange-400/10 px-8 py-4 text-2xl font-semibold text-orange-400 hover:bg-orange-400/20 active:bg-orange-400/30"
+                onClick={() => setPhase(BOARD)}
+              >
+                Show Leaderboard
+              </button>
+            </div>
           </div>
         )}
         {phase === FINISHED && (
