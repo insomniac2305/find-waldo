@@ -89,7 +89,7 @@ function Photo({ onCompletion }) {
 
   return (
     <div>
-      <div className="fixed top-24 flex w-full justify-center">
+      <div className="fixed left-0 top-24 flex w-full justify-center">
         <div className="flex flex-col items-center gap-4 rounded-lg bg-zinc-900 p-2">
           <h2 className="text-2xl font-bold tracking-tighter text-orange-400">Wanted</h2>
           <ul className="flex gap-4 font-semibold">{wantedCharListItems}</ul>
